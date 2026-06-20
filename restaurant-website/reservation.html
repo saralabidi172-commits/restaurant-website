@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservation - Food Paradise</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<footer class="footer">
+
+    <div class="footer-content">
+
+        <h3>Food Paradise</h3>
+
+        <p>Fresh ingredients, delicious meals, unforgettable moments.</p>
+
+        <p>📍 Tunis, Tunisia</p>
+
+        <p>📞 +216 12 345 678</p>
+
+        <p>📧 contact@foodparadise.com</p>
+
+        <div class="socials">
+            <a href="#">Facebook</a>
+            <a href="#">Instagram</a>
+            <a href="#">TikTok</a>
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+        © 2026 Food Paradise. All Rights Reserved.
+    </div>
+
+</footer>
+<body>
+
+<header>
+    <h1>Food Paradise</h1>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="menu.html">Menu</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+</header>
+
+<section class="reservation">
+
+    <div class="reservation-box">
+
+        <h2>Book a Table</h2>
+
+        <form id="bookingForm">
+
+    <input type="text" id="name" placeholder="Full Name" required>
+
+    <input type="tel" id="phone" placeholder="Phone Number" required>
+
+    <input type="number" id="people" placeholder="Number of Guests" required>
+
+    <input type="date" id="date" required>
+
+    <input type="time" id="time" required>
+
+    <button type="submit">Reserve Now</button>
+
+</form>
+
+<p id="msg"></p>
+
+    </div>
+
+</section>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCVFAE8v-mudFvGpihmKnl2XqMWLuPrXPI",
+  authDomain: "food-paradise-fc605.firebaseapp.com",
+  projectId: "food-paradise-fc605",
+  storageBucket: "food-paradise-fc605.firebasestorage.app",
+  messagingSenderId: "278563151495",
+  appId: "1:278563151495:web:2ec37e1f8e519d84136222"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+document.getElementById("bookingForm")
+.addEventListener("submit", async (e) => {
+
+    e.preventDefault();
+
+    try {
+
+        await addDoc(collection(db, "bookings"), {
+            name: document.getElementById("name").value,
+            phone: document.getElementById("phone").value,
+            people: Number(document.getElementById("people").value),
+            date: document.getElementById("date").value,
+            time: document.getElementById("time").value
+        });
+
+        document.getElementById("msg").innerText =
+            "Reservation saved successfully ✅";
+
+        document.getElementById("bookingForm").reset();
+
+    } catch(error) {
+
+        document.getElementById("msg").innerText =
+            error.message;
+
+        console.log(error);
+    }
+
+});
+</script>
+</body>
+</html>

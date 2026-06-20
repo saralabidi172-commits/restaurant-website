@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - Food Paradise</title>
+
+<style>
+
+/* ======================
+   BACKGROUND
+====================== */
+body{
+    margin:0;
+    padding:0;
+    font-family:Arial;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background:
+    linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.6)),
+    url("images/hero.jpg");
+
+    background-size:cover;
+    background-position:center;
+}
+
+/* ======================
+   BOX
+====================== */
+.container{
+    background:white;
+    padding:40px;
+    border-radius:15px;
+    width:350px;
+    text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,0.3);
+}
+
+h1{
+    color:#d35400;
+    margin-bottom:10px;
+}
+
+p{
+    color:#555;
+    margin-bottom:20px;
+}
+
+/* ======================
+   INPUTS
+====================== */
+input{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    border:1px solid #ccc;
+    border-radius:8px;
+}
+
+/* ======================
+   BUTTONS
+====================== */
+button{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    border:none;
+    border-radius:8px;
+    font-size:16px;
+    cursor:pointer;
+}
+
+#loginBtn{
+    background:#d35400;
+    color:white;
+}
+
+#registerBtn{
+    background:#27ae60;
+    color:white;
+}
+
+button:hover{
+    opacity:0.9;
+}
+
+/* ======================
+   MESSAGE
+====================== */
+#msg{
+    margin-top:15px;
+    font-weight:bold;
+}
+
+a{
+    display:block;
+    margin-top:15px;
+    color:#d35400;
+    text-decoration:none;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Food Paradise</h1>
+    <p>Login or Create an account</p>
+
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+
+    <button id="loginBtn">Login</button>
+    <button id="registerBtn">Register</button>
+
+    <p id="msg"></p>
+
+    <a href="index.html">← Back to Home</a>
+
+</div>
+
+<!-- ======================
+     FIREBASE SCRIPT
+====================== -->
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+import {
+  getFirestore,
+  doc,
+  setDoc
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCVFAE8v-mudFvGpihmKnl2XqMWLuPrXPI",
+  authDomain: "food-paradise-fc605.firebaseapp.com",
+  projectId: "food-paradise-fc605",
+  storageBucket: "food-paradise-fc605.firebasestorage.app",
+  messagingSenderId: "278563151495",
+  appId: "1:278563151495:web:2ec37e1f8e519d84136222"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// =====================
+// REGISTER
+// =====================
+document.getElementById("registerBtn")
+.addEventListener("click", async () => {
+
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  try {
+
+    const userCredential =
+    await createUserWithEmailAndPassword(auth, email, password);
+
+    const user = userCredential.user;
+
+    await setDoc(doc(db, "users", user.uid), {
+      email: email,
+      createdAt: new Date()
+    });
+
+    document.getElementById("msg").style.color = "green";
+    document.getElementById("msg").innerText =
+    "Account created successfully ✅";
+
+  } catch (error) {
+
+    document.getElementById("msg").style.color = "red";
+    document.getElementById("msg").innerText = error.message;
+  }
+
+});
+
+
+// =====================
+// LOGIN
+// =====================
+document.getElementById("loginBtn")
+.addEventListener("click", async () => {
+
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  try {
+
+    await signInWithEmailAndPassword(auth, email, password);
+
+    if(email === "admin@foodparadise.com") {
+      window.location.href = "admin.html";
+    } else {
+      window.location.href = "index.html";
+    }
+
+  } catch (error) {
+
+    document.getElementById("msg").style.color = "red";
+    document.getElementById("msg").innerText = error.message;
+  }
+
+});
+
+</script>
+
+</body>
+</html>
